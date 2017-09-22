@@ -13,8 +13,6 @@ public interface RestRequest {
 	
 	String VISIT_BOOK = "/visit/book";
 	String VISIT_CANCEL = "/visit/cancel";
-	String VISIT_CANCEL_DOCTOR = "/visit/cancel/doctor";
-	String VISIT_CANCEL_PATIENT = "/visit/cancel/patient";
 	
 	String SCHEDULE_BUILD = "/schedule/build";
 	String SCHEDULE_GET = "/schedule/get";
@@ -22,6 +20,7 @@ public interface RestRequest {
 	String VISITS_GET_FREE = "/visits/get/doctor/free";
 	String VISITS_GET_DOCTOR = "/visits/get/doctor";
 	String VISITS_GET_PATIENT = "/visits/get/patient";
+	String VISITS_REPLACE_DOCTOR = "/visits/cancel/doctor";
 	String DOCTORS_GET = "/doctors/get";
 	String PATIENTS_GET = "/patients/get";
 	String DOCTORS_PATIENT_GET = "/doctors/patient/get";
