@@ -6,5 +6,5 @@ public interface RestResponseCode {
 	String NO_PATIENT = "no patient";
 	String NO_SCHEDULE = "no schedule on this time";
 	String VISIT_BUSY = "doctor at this time is busy";
-	
+	String ALREADY_EXIST = "already exist";
 }

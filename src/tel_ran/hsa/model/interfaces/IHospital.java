@@ -19,8 +19,7 @@ public interface IHospital extends Serializable{
 	Iterable<Visit> buildSchedule(LocalDate startDate, LocalDate finishDate);
 	String bookVisit(int doctorId, int patientId, LocalDateTime dateTime);
 	String cancelVisit(int doctorId, int patientId, LocalDateTime dateTime);
-	String cancelVisitByPatient(int patientId, LocalDateTime dateTime);
-	String cancelVisitByDoctor(int doctorId, LocalDateTime dateTime);
+	String replaceDoctor(int doctorId, LocalDateTime beginDateTime, LocalDateTime endDateTime);
 	
 	Iterable<Doctor> getPatientDoctors(int patientId);
 	Iterable<Patient> getDoctorPatients(int docotrId);
