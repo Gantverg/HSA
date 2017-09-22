@@ -24,6 +24,8 @@ public interface RestRequest {
 	String VISITS_GET_PATIENT = "/visits/get/patient";
 	String DOCTORS_GET = "/doctors/get";
 	String PATIENTS_GET = "/patients/get";
+	String DOCTORS_PATIENT_GET = "/doctors/patient/get";
+	String PATIENTS_DOCTOR_GET = "/patients/doctor/get";
 	
 	String PULSE_ADD = "/pulse/add";
 	String PULSE_GET = "/pulse/get";

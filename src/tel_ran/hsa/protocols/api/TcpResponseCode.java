@@ -1,6 +1,6 @@
 package tel_ran.hsa.protocols.api;
 
-public enum ResponseCode {
+public enum TcpResponseCode {
 	WRONG_REQUEST_TYPE, OK, ERROR
 
 }
