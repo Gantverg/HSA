@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import tel_ran.hsa.model.dto.*;
+import tel_ran.hsa.protocols.api.RestResponseCode;
 
 public interface IHospital extends Serializable{
 	String addDoctor(Doctor doctor);
@@ -13,7 +14,7 @@ public interface IHospital extends Serializable{
 	String removePatient(int patientId);
 	String updateDoctor(Doctor doctor);
 	String updatePatient(Patient patient);
-	Doctor getDoctor(int docotrId);
+	Doctor getDoctor(int doctorId);
 	Patient getPatient(int patientId);
 	
 	Iterable<Visit> buildSchedule(LocalDate startDate, LocalDate finishDate);
@@ -22,13 +23,19 @@ public interface IHospital extends Serializable{
 	String replaceVisitsDoctor(int oldDoctorId, int newDoctorId, LocalDateTime beginDateTime, LocalDateTime endDateTime);
 	
 	Iterable<Doctor> getPatientDoctors(int patientId);
-	Iterable<Patient> getDoctorPatients(int docotrId);
+	Iterable<Patient> getDoctorPatients(int doctorId);
 	
 	Iterable<Visit> getVisitsByPatient(int patientId, LocalDate beginDate, LocalDate endDate);
 	Iterable<Visit> getVisitsByDoctor(int doctorId, LocalDate beginDate, LocalDate endDate);
 	Iterable<Visit> getFreeVisits(int doctorId, LocalDate beginDate, LocalDate endDate);
 	
-	String addPulseInfo(int patientId, LocalDateTime dateTime, int value);
+	String addHealthGroup(String groupName, int minNormalPulse, int maxNormalPulse, int serveyPeriod);
+	String removeHealthGroup(String groupName);
+	Iterable<HealthGroup> getHealthGroups();
+	
+	default String addPulseInfo(int patientId, LocalDateTime dateTime, int value) {
+		return RestResponseCode.OK;
+	}
 	default Iterable<Integer> getPulseByPeriod(int patientId, LocalDate beginDate, LocalDate endDate) {
 		return getPulseByPeriod(patientId, beginDate, endDate, getPatient(patientId).getHealthGroup().getServeyPeriod());
 	}

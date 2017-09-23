@@ -6,6 +6,10 @@ public interface RestRequest {
 	String DOCTOR_GET = "/doctor/get";
 	String DOCTOR_UPDATE = "/doctor/update";
 	
+	String HEALTHGROUP_ADD = "/healthgroup/add";
+	String HEALTHGROUP_REMOVE = "/healthgroup/remove";
+	String HEALTHGROUPS_GET = "/healthgroups/get";
+	
 	String PATIENT_ADD = "/patient/add";
 	String PATIENT_REMOVE = "/patient/remove";
 	String PATIENT_GET = "/patient/get";

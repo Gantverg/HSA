@@ -1,20 +1,20 @@
 package tel_ran.hsa.model.dto;
 
 public class HealthGroup {
-	String name;
+	String groupName;
 	int minNormalPulse;
 	int maxNormalPulse;
 	int serveyPeriod;
 	
-	public HealthGroup(String name, int minNormalPulse, int maxNormalPulse, int serveyPeriod) {
+	public HealthGroup(String groupName, int minNormalPulse, int maxNormalPulse, int serveyPeriod) {
 		super();
-		this.name = name;
+		this.groupName = groupName;
 		this.minNormalPulse = minNormalPulse;
 		this.maxNormalPulse = maxNormalPulse;
 		this.serveyPeriod = serveyPeriod;
 	}
-	public String getName() {
-		return name;
+	public String getGroupName() {
+		return groupName;
 	}
 	public int getMinNormalPulse() {
 		return minNormalPulse;
@@ -26,8 +26,8 @@ public class HealthGroup {
 		return serveyPeriod;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 	public void setMinNormalPulse(int minNormalPulse) {
 		this.minNormalPulse = minNormalPulse;
@@ -41,7 +41,7 @@ public class HealthGroup {
 	
 	@Override
 	public String toString() {
-		return "HealthGroup [name=" + name + ", minNormalPulse=" + minNormalPulse + ", maxNormalPulse=" + maxNormalPulse
+		return "HealthGroup [name=" + groupName + ", minNormalPulse=" + minNormalPulse + ", maxNormalPulse=" + maxNormalPulse
 				+ ", serveyPeriod(minutes)=" + serveyPeriod + "]";
 	}
 	
