@@ -29,7 +29,7 @@ public interface IHospital extends Serializable{
 	Iterable<Visit> getVisitsByDoctor(int doctorId, LocalDate beginDate, LocalDate endDate);
 	Iterable<Visit> getFreeVisits(int doctorId, LocalDate beginDate, LocalDate endDate);
 	
-	String addHealthGroup(String groupName, int minNormalPulse, int maxNormalPulse, int serveyPeriod);
+	String addHealthGroup(String groupName, int minNormalPulse, int maxNormalPulse, int surveyPeriod);
 	String removeHealthGroup(String groupName);
 	Iterable<HealthGroup> getHealthGroups();
 	
