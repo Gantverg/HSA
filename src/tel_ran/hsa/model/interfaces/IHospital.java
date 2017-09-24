@@ -37,7 +37,7 @@ public interface IHospital extends Serializable{
 		return RestResponseCode.OK;
 	}
 	default Iterable<Integer> getPulseByPeriod(int patientId, LocalDate beginDate, LocalDate endDate) {
-		return getPulseByPeriod(patientId, beginDate, endDate, getPatient(patientId).getHealthGroup().getServeyPeriod());
+		return getPulseByPeriod(patientId, beginDate, endDate, getPatient(patientId).getHealthGroup().getSurveyPeriod());
 	}
 	Iterable<Integer> getPulseByPeriod(int patientId, LocalDate beginDate, LocalDate endDate, int surveyPeriod);
 	
