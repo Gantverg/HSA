@@ -1,17 +1,23 @@
 package tel_ran.hsa.model.dto;
 
 public class HealthGroup {
+	int id;
 	String groupName;
 	int minNormalPulse;
 	int maxNormalPulse;
 	int surveyPeriod;
 	
-	public HealthGroup(String groupName, int minNormalPulse, int maxNormalPulse, int surveyPeriod) {
+	public HealthGroup(int id, String groupName, int minNormalPulse, int maxNormalPulse, int surveyPeriod) {
 		super();
+		this.id = id;
 		this.groupName = groupName;
 		this.minNormalPulse = minNormalPulse;
 		this.maxNormalPulse = maxNormalPulse;
 		this.surveyPeriod = surveyPeriod;
+	}
+	
+	public int getId() {
+		return id;
 	}
 	public String getGroupName() {
 		return groupName;

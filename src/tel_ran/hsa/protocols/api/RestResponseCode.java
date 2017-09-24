@@ -8,4 +8,5 @@ public interface RestResponseCode {
 	String VISIT_BUSY = "doctor at this time is busy";
 	String ALREADY_EXIST = "already exist";
 	String NO_HEALTH_GROUP = "no healthgroup";
+	String VISIT_FREE = "visit free already";
 }

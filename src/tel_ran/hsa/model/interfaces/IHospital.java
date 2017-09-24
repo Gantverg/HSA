@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import tel_ran.hsa.model.dto.*;
 import tel_ran.hsa.protocols.api.RestResponseCode;
 
-public interface IHospital extends Serializable{
+public interface IHospital extends Serializable, Iterable<Doctor>{
 	String addDoctor(Doctor doctor);
 	String addPatient(Patient patient);
 	String removeDoctor(int doctorId);
@@ -29,9 +29,10 @@ public interface IHospital extends Serializable{
 	Iterable<Visit> getVisitsByDoctor(int doctorId, LocalDate beginDate, LocalDate endDate);
 	Iterable<Visit> getFreeVisits(int doctorId, LocalDate beginDate, LocalDate endDate);
 	
-	String addHealthGroup(String groupName, int minNormalPulse, int maxNormalPulse, int surveyPeriod);
-	String removeHealthGroup(String groupName);
+	String addHealthGroup(HealthGroup healthGroup);
+	String removeHealthGroup(int groupId);
 	Iterable<HealthGroup> getHealthGroups();
+	Iterable<Patient> getPatients();
 	
 	default String addPulseInfo(int patientId, LocalDateTime dateTime, int value) {
 		return RestResponseCode.OK;

@@ -15,7 +15,7 @@ public class HeartBeat {
 		this.value = value;
 		this.surveyPeriod = surveyPeriod;
 	}
-
+	
 	public Patient getPatient() {
 		return patient;
 	}
