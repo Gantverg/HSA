@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import tel_ran.hsa.model.dto.*;
 import tel_ran.hsa.protocols.api.RestResponseCode;
+import tel_ran.hsa.tests.model.ScheduleNotEmptyException;
 
 public interface IHospital extends Serializable, Iterable<Doctor>{
 	String addDoctor(Doctor doctor);
@@ -17,7 +18,7 @@ public interface IHospital extends Serializable, Iterable<Doctor>{
 	Doctor getDoctor(int doctorId);
 	Patient getPatient(int patientId);
 	
-	Iterable<Visit> buildSchedule(LocalDate startDate, LocalDate finishDate);
+	Iterable<Visit> buildSchedule(LocalDate startDate, LocalDate finishDate) throws ScheduleNotEmptyException;
 	String bookVisit(int doctorId, int patientId, LocalDateTime dateTime);
 	String cancelVisit(int doctorId, int patientId, LocalDateTime dateTime);
 	String replaceVisitsDoctor(int oldDoctorId, int newDoctorId, LocalDateTime beginDateTime, LocalDateTime endDateTime);
