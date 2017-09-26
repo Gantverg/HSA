@@ -5,6 +5,9 @@ abstract class Person {
 	String name;
 	String phoneNumber;
 	String eMail;
+
+	public Person() {
+	}
 	
 	public Person(int id, String name, String phoneNumber, String eMail) {
 		super();

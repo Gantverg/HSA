@@ -39,23 +39,28 @@ public class ModelTestAppl {
 					 DayOfWeek.THURSDAY,
 					 DayOfWeek.SATURDAY}
 					};
+	private static WorkingDays[] workingDays = new WorkingDays[3];
 	private static final LocalDate START_DATE = LocalDate.now();
 	private static final LocalDate FINISH_DATE = START_DATE.plusDays(7);
 	private static final LocalTime START_TIME = LocalTime.of(9, 0);
 	private static final LocalTime FINISH_TIME = LocalTime.of(18, 0);
 	private static final long TIME_SLOT = 15;
-	IHospital hospital = new HospitalProto(START_TIME, FINISH_TIME, TIME_SLOT);
+	IHospital hospital = new HospitalProto(START_TIME.toString(), FINISH_TIME.toString(), TIME_SLOT);
 	RandomGenerator generator = new RandomGenerator();
 
 	@Before
 	public void setUp() throws Exception {
+		for(int i = 0; i < scheduleVariants.length; i++) {
+			workingDays[i] = new WorkingDays();
+			workingDays[i].setDays(scheduleVariants[i]);
+		}
 		Doctor doctor;
 		for(int i = N_FIRST_DOCTOR; i < N_FIRST_DOCTOR + N_DOCTORS; i++) {
 			doctor = new Doctor(i, 
 							  String.format("doctor%02d", i), 
 							  String.format("050-12345%02d", i), 
 							  String.format("mail%02d@hospital.co.il", i));
-			doctor.setWorkingDays(scheduleVariants[i%scheduleVariants.length]);
+			doctor.setWorkingDays(workingDays[i%scheduleVariants.length]);
 			hospital.addDoctor(doctor);
 			
 		};
@@ -357,5 +362,39 @@ public class ModelTestAppl {
 			assertTrue(compPatientVisits.remove(visit));
 		}
 		assertTrue(compPatientVisits.isEmpty());
+	}
+
+	@Test
+	public void testGetVisitsByDoctor() {
+		generateSchedule();
+		List<Visit> listVisits = generateVisits();
+		List<Visit> origDoctorVisits = listVisits.stream()
+			.filter(visit->visit.getDoctor().getId()==N_FIRST_DOCTOR)
+			.collect(Collectors.toList());
+		Iterable<Visit> doctorVisits = hospital.getVisitsByDoctor(N_FIRST_DOCTOR, START_DATE, FINISH_DATE);
+		List<Visit> compDoctorVisits = StreamSupport.stream(doctorVisits.spliterator(), false)
+											.collect(Collectors.toList());
+		for (Visit visit : origDoctorVisits) {
+			assertTrue(compDoctorVisits.remove(visit));
+		}
+		assertTrue(compDoctorVisits.isEmpty());
+	}
+	
+	@Test
+	public void testGetFreeVisits() {
+		generateSchedule();
+		List<Visit> listVisits = generateVisits();
+		for (Visit visit : listVisits) {
+			if(visit.getDoctor().getId()==N_FIRST_DOCTOR)
+				hospital.cancelVisit(N_FIRST_DOCTOR, visit.getPatient().getId(), visit.getDateTime());
+		}
+		Iterable<Visit> freeVisits = hospital.getFreeVisits(N_FIRST_DOCTOR, START_DATE, START_DATE);
+		for (Visit visit : freeVisits) {
+			assertEquals(N_FIRST_DOCTOR, visit.getDoctor().getId());
+			assertNull(visit.getPatient());
+		}
+		
+		Iterable<Visit> busyVisits = hospital.getVisitsByDoctor(N_FIRST_DOCTOR, START_DATE, FINISH_DATE); //allready tested
+		assertFalse(busyVisits.iterator().hasNext());
 	}
 }

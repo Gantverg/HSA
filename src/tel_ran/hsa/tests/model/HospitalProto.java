@@ -2,39 +2,40 @@ package tel_ran.hsa.tests.model;
 
 import java.time.*;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import tel_ran.hsa.model.Hospital;
 import tel_ran.hsa.model.dto.*;
-import tel_ran.hsa.model.interfaces.IHospital;
 import tel_ran.hsa.protocols.api.RestResponseCode;
 
 @SuppressWarnings("serial")
-public class HospitalProto implements IHospital {
+public class HospitalProto extends Hospital {
 	Map<Integer, Doctor> doctors;
 	Map<Integer, Patient> patients;
 	Map<Integer, HealthGroup> healthGroups;
 	Map<PersonDateTime, Visit> schedule;
 	Map<PersonDateTime, HeartBeat> pulseInfo;
-	private LocalTime hospitalStartTime;
-	private LocalTime hospitalFinishTime;
-	private long timeSlot;
 
-	public HospitalProto(LocalTime hospitalStartTime, LocalTime hospitalFinishTime, long timeSlot) {
+	public HospitalProto(
+			String hospitalStartTime, 
+			String hospitalFinishTime, 
+			long timeSlot) {
+		super(hospitalStartTime, hospitalFinishTime, timeSlot);
 		doctors = new HashMap<>();
 		patients = new HashMap<>();
 		healthGroups = new HashMap<>();
 		schedule = new HashMap<>();
 		pulseInfo = new HashMap<>();
 
-		this.hospitalStartTime = hospitalStartTime;
-		this.hospitalFinishTime = hospitalFinishTime;
-		this.timeSlot = timeSlot;
 	}
 
 	@Override
 	public String addDoctor(Doctor doctor) {
-		return doctors.putIfAbsent(doctor.getId(), doctor) == null ? RestResponseCode.OK
-				: RestResponseCode.ALREADY_EXIST;
+		if(doctors.containsKey(doctor.getId()))
+			return RestResponseCode.ALREADY_EXIST;
+		doctors.put(doctor.getId(), doctor);
+		return RestResponseCode.OK;
 	}
 
 	@Override
@@ -89,13 +90,18 @@ public class HospitalProto implements IHospital {
 		prevSchedule.putAll(schedule);
 		List<Visit> result = new ArrayList<>();
 		for (Doctor doctor : doctors.values()) {
-			for(LocalDate currentDate = startDate; currentDate.isBefore(finishDate) ||currentDate.isEqual(finishDate); currentDate = currentDate.plusDays(1)) {
+			for(LocalDate currentDate = startDate; 
+					currentDate.isBefore(finishDate) ||currentDate.isEqual(finishDate); 
+					currentDate = currentDate.plusDays(1)) {
 				if(doctor.isDayWorking(currentDate))
-					for (LocalTime currentTime = hospitalStartTime; currentTime.isBefore(hospitalFinishTime); currentTime = currentTime.plusMinutes(timeSlot)) {
+					for (LocalTime currentTime = hospitalStartTime; 
+							currentTime.isBefore(hospitalFinishTime); 
+							currentTime = currentTime.plusMinutes(timeSlot)) {
 						LocalDateTime currentDateTime = LocalDateTime.of(currentDate, currentTime);
 						Visit visit = new Visit(doctor, null, currentDateTime);
 						if(schedule.put(new PersonDateTime(doctor.getId(), currentDateTime), visit) != null)
-							throw new ScheduleNotEmptyException(doctor.toString()+" already has records to "+currentDateTime.toString());
+							throw new ScheduleNotEmptyException(doctor.toString()+
+									" already has records to "+currentDateTime.toString());
 						result.add(visit);
 					}
 			}
@@ -174,35 +180,36 @@ public class HospitalProto implements IHospital {
 	@Override
 	public Iterable<Visit> getVisitsByPatient(int patientId, LocalDate beginDate, LocalDate endDate) {
 		return schedule.entrySet().stream().filter(entry -> entry.getValue().getPatient().getId() == patientId)
-				.filter(entry -> entry.getKey().dateTime.toLocalDate().isAfter(beginDate)
-						&& entry.getKey().dateTime.toLocalDate().isBefore(endDate)
-						|| entry.getKey().dateTime.toLocalDate().isEqual(endDate))
+				.filter(entry -> isVisitInPeriod(beginDate, endDate, entry))
 				.map(entry -> entry.getValue()).collect(Collectors.toList());
+	}
+
+	private boolean isVisitInPeriod(LocalDate beginDate, LocalDate endDate, Entry<PersonDateTime, Visit> entry) {
+		LocalDate date = entry.getKey().dateTime.toLocalDate();
+		return date.isAfter(beginDate.minusDays(1)) && date.isBefore(endDate.plusDays(1));
 	}
 
 	@Override
 	public Iterable<Visit> getVisitsByDoctor(int doctorId, LocalDate beginDate, LocalDate endDate) {
 		return schedule.entrySet().stream().filter(entry -> entry.getKey().personId == doctorId)
-				.filter(entry -> entry.getKey().dateTime.toLocalDate().isAfter(beginDate)
-						&& entry.getKey().dateTime.toLocalDate().isBefore(endDate)
-						|| entry.getKey().dateTime.toLocalDate().isEqual(endDate))
-				.filter(entry -> entry.getValue().getPatient() != null).map(entry -> entry.getValue())
+				.filter(entry -> isVisitInPeriod(beginDate, endDate, entry))
+				.filter(entry -> entry.getValue().getPatient() != null)
+				.map(entry -> entry.getValue())
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Iterable<Visit> getFreeVisits(int doctorId, LocalDate beginDate, LocalDate endDate) {
 		return schedule.entrySet().stream().filter(entry -> entry.getKey().personId == doctorId)
-				.filter(entry -> entry.getKey().dateTime.toLocalDate().isAfter(beginDate)
-						&& entry.getKey().dateTime.toLocalDate().isBefore(endDate)
-						|| entry.getKey().dateTime.toLocalDate().isEqual(endDate))
-				.filter(entry -> entry.getValue().getPatient() == null).map(entry -> entry.getValue())
+				.filter(entry -> isVisitInPeriod(beginDate, endDate, entry))
+				.filter(entry -> entry.getValue().getPatient() == null)
+				.map(entry -> entry.getValue())
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public String addHealthGroup(HealthGroup healthGroup) {
-		return healthGroups.putIfAbsent(healthGroup.getId(), healthGroup) == null ? RestResponseCode.OK
+		return healthGroups.putIfAbsent(healthGroup.getGroupId(), healthGroup) == null ? RestResponseCode.OK
 						: RestResponseCode.ALREADY_EXIST;
 	}
 
