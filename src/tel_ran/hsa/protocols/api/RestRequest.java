@@ -1,10 +1,15 @@
 package tel_ran.hsa.protocols.api;
 
 public interface RestRequest {
+	String WORKINGDAYS_ADD = "/workingdays/add";
+	String WORKINGDAYS_REMOVE = "/workingdays/remove";
+	String WORKINGDAYS_GET = "/workingdays/get";
+	
 	String DOCTOR_ADD = "/doctor/add";
 	String DOCTOR_REMOVE = "/doctor/remove";
 	String DOCTOR_GET = "/doctor/get";
 	String DOCTOR_UPDATE = "/doctor/update";
+	String DOCTOR_WORKINGDAYS_SET = "/doctor/workingdays/set";
 	
 	String HEALTHGROUP_ADD = "/healthgroup/add";
 	String HEALTHGROUP_REMOVE = "/healthgroup/remove";

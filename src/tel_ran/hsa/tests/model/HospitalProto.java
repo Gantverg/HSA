@@ -16,6 +16,7 @@ public class HospitalProto extends Hospital {
 	Map<Integer, HealthGroup> healthGroups;
 	Map<PersonDateTime, Visit> schedule;
 	Map<PersonDateTime, HeartBeat> pulseInfo;
+	Map<Integer, WorkingDays> workingDaysList;
 
 	public HospitalProto(
 			String hospitalStartTime, 
@@ -27,7 +28,38 @@ public class HospitalProto extends Hospital {
 		healthGroups = new HashMap<>();
 		schedule = new HashMap<>();
 		pulseInfo = new HashMap<>();
+		fillWorkingDaysByDefault();
 
+	}
+
+	private void fillWorkingDaysByDefault() {
+		DayOfWeek[][] scheduleVariants = {
+				{DayOfWeek.SUNDAY,
+				 DayOfWeek.MONDAY,
+				 DayOfWeek.TUESDAY,
+				 DayOfWeek.WEDNESDAY,
+				 DayOfWeek.THURSDAY},
+				{DayOfWeek.SUNDAY,
+				 DayOfWeek.MONDAY,
+				 DayOfWeek.WEDNESDAY,
+				 DayOfWeek.THURSDAY,
+				 DayOfWeek.FRIDAY},
+				{DayOfWeek.SUNDAY,
+				 DayOfWeek.TUESDAY,
+				 DayOfWeek.THURSDAY,
+				 DayOfWeek.SATURDAY}
+				};
+		workingDaysList = new HashMap<>();
+		for(int daysId = 0; daysId < scheduleVariants.length; daysId++) {
+			WorkingDays schedule = new WorkingDays(daysId);
+			schedule.setWorkDays(scheduleVariants[daysId]);
+			workingDaysList.put(daysId, schedule);
+		}
+		healthGroups = new HashMap<>();
+		healthGroups.put(0, new HealthGroup(0, "Normal", 40, 80, 60*6));
+		healthGroups.put(1, new HealthGroup(1, "Risk1", 80, 120, 30));
+		healthGroups.put(2, new HealthGroup(2, "Risk2", 20, 60, 60));
+		healthGroups.put(3, new HealthGroup(3, "Spies", 55, 65, 60));
 	}
 
 	@Override
@@ -251,6 +283,39 @@ public class HospitalProto extends Hospital {
 	@Override
 	public Iterator<Doctor> iterator() {
 		return doctors.values().iterator();
+	}
+
+	@Override
+	public String addWorkingDays(WorkingDays workingDays) {
+		if(workingDaysList.containsKey(workingDays.getDaysId()))
+			return RestResponseCode.ALREADY_EXIST;
+		workingDaysList.put(workingDays.getDaysId(), workingDays);
+		return RestResponseCode.OK;
+	}
+
+	@Override
+	public String removeWorkingDays(int daysId) {
+		if(!workingDaysList.containsKey(daysId))
+			return RestResponseCode.NO_SCHEDULE;
+		workingDaysList.remove(daysId);
+		return RestResponseCode.OK;
+	}
+
+	@Override
+	public WorkingDays getWorkingDays(int daysId) {
+		return workingDaysList.get(daysId);
+	}
+
+	@Override
+	public String setWorkingDays(int doctorId, int daysId) {
+		Doctor doctor= doctors.get(doctorId);
+		if(doctor == null)
+			return RestResponseCode.NO_DOCTOR;
+		WorkingDays schedule = workingDaysList.get(daysId);
+		if(schedule == null)
+			return RestResponseCode.NO_SCHEDULE;
+		doctor.setWorkingDays(schedule);
+		return RestResponseCode.OK;
 	}
 
 }

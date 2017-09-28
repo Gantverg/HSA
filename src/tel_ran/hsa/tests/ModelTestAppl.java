@@ -51,8 +51,8 @@ public class ModelTestAppl {
 	@Before
 	public void setUp() throws Exception {
 		for(int i = 0; i < scheduleVariants.length; i++) {
-			workingDays[i] = new WorkingDays();
-			workingDays[i].setDays(scheduleVariants[i]);
+			workingDays[i] = new WorkingDays(i);
+			workingDays[i].setWorkDays(scheduleVariants[i]);
 		}
 		Doctor doctor;
 		for(int i = N_FIRST_DOCTOR; i < N_FIRST_DOCTOR + N_DOCTORS; i++) {

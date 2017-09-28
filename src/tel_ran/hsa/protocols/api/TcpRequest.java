@@ -1,6 +1,11 @@
 package tel_ran.hsa.protocols.api;
 
 public enum TcpRequest {
+	ADD_WORKINGDAYS,
+	REMOVE_WORKINGDAYS,
+	GET_WORKINGDAYS,
+	SET_WORKINGDAYS,
+	
 	ADD_DOCTOR,
 	ADD_PATIENT,
 	REMOVE_DOCTOR,
